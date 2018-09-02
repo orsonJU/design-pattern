@@ -5,5 +5,9 @@ package org.orson.factory.simple;
  *
  * The object to be created by simple factory pattern.
  */
-public class Product {
+public interface Product {
+
+    public String getName();
+
+    public Integer getWight();
 }
