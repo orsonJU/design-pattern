@@ -9,40 +9,47 @@ import java.util.Objects;
  */
 public class RegisterSingleton {
 
+    /**
+     * private constructor
+     */
+    private RegisterSingleton() {
+    }
 
-    private Map<String, Object> registry = new HashMap<>();
+    /**
+     * 存放实例的数据结构
+     */
+    private static Map<String, Object> registry = new HashMap<>();
 
+    private final static Object lock = new Object();
 
-    private final Object lock = new Object();
-
-    public <T> T getInstance(Class<T> type) {
-
+    /**
+     * 获取单例对象
+     * @param type 单例对象的类型
+     * @param <T> 返回和要求的对象相同类型的唯一实例
+     * @return 实例对象
+     */
+    public static <T> T getInstance(Class<T> type) {
+        // 保证每个类型只拥有一个实例
         String name = type.getName();
 
         if(registry.containsKey(name)) {
             return (T)registry.get(name);
-        }else {
+        }
 
-            //套用懒汉模式的精髓
-            synchronized (lock) {
-                // prevent duplicated instance created
-                if(Objects.isNull(registry.get(name))) {
+        //套用懒汉模式的精髓
+        synchronized (lock) {
+            // prevent duplicated instance created
+            if(Objects.isNull(registry.get(name))) {
 
-                    Object instance = null;
-                    try {
-                        instance = Class.forName(name).newInstance();
-                    } catch (InstantiationException e) {
-                        e.printStackTrace();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                    registry.put(name, instance);
-
+                Object instance = null;
+                try {
+                    instance = Class.forName(name).newInstance();
+                } catch (InstantiationException| IllegalAccessException | ClassNotFoundException e) {
+                    e.printStackTrace();
                 }
-                return (T)registry.get(name);
+                registry.put(name, instance);
             }
+            return (T)registry.get(name);
         }
     }
 }

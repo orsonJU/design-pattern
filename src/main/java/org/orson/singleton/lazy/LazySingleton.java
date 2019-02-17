@@ -5,17 +5,24 @@ package org.orson.singleton.lazy;
  */
 public class LazySingleton {
 
-    private LazySingleton instance;
+    // 私有的静态变量，不能通过类直接访问
+    private static LazySingleton instance;
 
+    /**
+     * 私有构造函数，不能被初始化
+     */
     private LazySingleton() {
 
     }
 
-
-    public LazySingleton getInstance() {
-
+    /**
+     * 固定的模式
+     * @return 实例对象
+     */
+    public static LazySingleton getInstance() {
         if(instance == null) {
-            synchronized(instance) {
+            // 对整个字节码进行上锁
+            synchronized(LazySingleton.class) {
                 if(instance == null) {
                     instance = new LazySingleton();
                 }
