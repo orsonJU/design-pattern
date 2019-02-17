@@ -1,2 +1,5 @@
 .idea
 .design-pattern.iml
+.DS_Store
+target/
+*.class
